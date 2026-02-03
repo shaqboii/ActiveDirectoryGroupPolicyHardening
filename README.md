@@ -33,3 +33,13 @@ Let's try setting a poor password on a user to ensure that our rules are in plac
 
 As expected, we cannot set that as a password. Nice!
 
+Now, I am going to enforce a software restriction that dissallows users to use the Windows Media Player. To do this, while under the Group Policy Management Editor, look for a folder also under security settings named Software Restriction Policies. Then, right-click it and add software restriction policies. It will create two new folders under it; Security Levels and Additional rules. Security Levels defines the level of access a program may have, and Additional Rules hosts the paths to the files of which we want to allow/dissallow. I am going to dissallow the Windows Media Player by adding a new path rule and feeding ```C:\Program Files (x86)\Windows Media Player\wmplayer.exe``` into the path. Under Security Level, I will select Dissallow. After applying it, I will run ```gpupdate /force``` in powershell to make sure it is updated. Now, let's head over to our PC1 to check if the rule has been enforced.
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/c3381146-2e6e-4e0a-9b52-d4388bf23f19" />
+
+On the PC1, update the group policy by running ```gpupdate /force``` in powershell. Then restart.
+
+Navigate to the Windows Media Player executable and run it. You will come across this screen. Congratulations! You've implemented a software restriction!
+
+<img width="1024" height="768" alt="image" src="https://github.com/user-attachments/assets/801b6822-38b7-4cdd-92ce-d8e59a925c21" />
+
