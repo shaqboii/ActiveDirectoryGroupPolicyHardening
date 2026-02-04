@@ -49,7 +49,7 @@ Now, I will enable and configure a firewall. From Server Manager, go to ```Tools
 
 <img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/28c199cb-20e1-48fe-a10d-a07b5c66dbcf" />
 
-Let's enforce the firewall on our PC1. Right-click on the newly created GPO and hit Edit. Navigate to ```Policies > Administrative Templates > Network > Network Connections > Windows Defender Firewall > Standard Profile```. From here, double-click on ```Windows Defender Firewall: Protect all network connections``` and enable it.
+Let's enforce the firewall on our PC1. Right-click on the newly created GPO and hit Edit. Navigate to ```Policies > Administrative Templates > Network > Network Connections > Windows Defender Firewall > Standard Profile```. From here, double-click on ```Windows Defender Firewall: Protect all network connections``` and enable it. Do this for the Domain Profile too.
 
 <img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/20cb184d-02fd-407b-81ec-243730f44a89" />
 
