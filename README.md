@@ -39,7 +39,30 @@ Now, I am going to enforce a software restriction that dissallows users to use t
 
 On the PC1, update the group policy by running ```gpupdate /force``` in powershell. Then restart.
 
-Navigate to the Windows Media Player executable and run it. You will come across this screen. Congratulations! You've implemented a software restriction!
+Navigate to the Windows Media Player executable and run it. You will come across this screen. 
 
 <img width="1024" height="768" alt="image" src="https://github.com/user-attachments/assets/801b6822-38b7-4cdd-92ce-d8e59a925c21" />
 
+Congratulations! You've implemented a software restriction!
+
+Now, I will enable and configure a firewall. From Server Manager, go to ```Tools > Group Policy Management```. From the GPM window, locate the ```Group Policy Objects``` folder under your domain. Right-click this folder, and create a new GPO. Name it **Enable Firewall Group Policy**. 
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/28c199cb-20e1-48fe-a10d-a07b5c66dbcf" />
+
+Let's enforce the firewall on our PC1. Right-click on the newly created GPO and hit Edit. Navigate to ```Policies > Administrative Templates > Network > Network Connections > Windows Defender Firewall > Standard Profile```. From here, double-click on ```Windows Defender Firewall: Protect all network connections``` and enable it.
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/20cb184d-02fd-407b-81ec-243730f44a89" />
+
+Now, let's link this firewall to our PC1. To do this, go back to the Group Policy Management window and right-click on the OU that contains PC1, which in my case, is Workstations, and select **Link an existing GPO**. 
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/19732192-074b-4da2-9ea0-4c1e3bdb8267" />
+
+Let's ensure that the firewall has been enabled for our PC1. Before we update the GP on PC1, let's intentionally disable Windows Defender Firewall on it. Once we update GP, it should be not only enabled, but strictly controlled by the admin.
+
+<img width="1024" height="768" alt="image" src="https://github.com/user-attachments/assets/6dad72d0-b9c0-4cb2-96a1-e1196d6a22dd" />
+
+Now that it is disabled, let's update GP by running ```gpupdate /force``` in powershell. 
+
+<img width="1024" height="768" alt="image" src="https://github.com/user-attachments/assets/2f93d1ed-3895-4c0e-ba46-35af98bf3831" />
+
+Nice! The firewall was enabled as intended, and it cannot be changed without admin oversight.
