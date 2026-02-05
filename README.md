@@ -66,3 +66,41 @@ Now that it is disabled, let's update GP by running ```gpupdate /force``` in pow
 <img width="1024" height="768" alt="image" src="https://github.com/user-attachments/assets/2f93d1ed-3895-4c0e-ba46-35af98bf3831" />
 
 Nice! The firewall was enabled as intended, and it cannot be changed without admin oversight.
+
+I will now be configuring the rules of the firewall. Go back to the Group Polic Objects folder under the Group Policy Management tab, and create a new GPO. I am going to name it **Workstation Firewall Rules**. 
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/b35dbe06-c891-4eba-8c1c-d44fb064c315" />
+
+Now edit the new GPO, and navigate to ```Policies > Windows Settings > Security Settings > Windows Defender Firewall with Advanced Security```. Under the overview, we can clearly see that the firewall has not been configured. Click on **Windows Defender Firewall Properties** to edit this.
+
+Firstly, under the domain profile, enable the firewall state. Then block inbound connections and allow outbound connections. Under settings, click configure and set "No" to display a notification, "Yes" to allow unicast response, "No" to apply local firewall rules, and "No" to apply local connection security rules. 
+
+Some of these settings I have chosen may sound scary and insecure at face value, but let me explain. By blocking inbound connections, we enforce least privilege, as if this is allowed, other devices on the network could attempt to penetrate the PC1, thus increasing the attack surface. By allowing outbound connections, this allows critical communication with the DC1, such as login authentications, DNS queries, and Windows updates among others; if outbound traffic originates from the network PC, it is likely genuine and pure in intentions. By choosing not to display notifications to the user if a program is blocked from receiving inbound traffic, this makes the firewall operate silently. This is beneficial, as if attackers gain access to the PC, they could see what traffic works and what doesn't to further their reconnaissance. Unicast responses must be allowed to ensure that communication to any one specific device on the network is able to occur. Disabling local firewall rules is good as it prevents users from creating their own rules on their own machines. This reinforces centralized control within a network. The same applies for local connection security policies, as IPSec can easily be misconfigured by users and is best to be centrally controlled by admins to provide efficiency, consistency, and strength.
+
+Next, enable logging on the domain profile by clicking Customize under logging. Enable logging, accepting the default path to the log file. Uncheck not configured for both the name and size limit. Use the default size. Choose Yes to log dropped packets and successful connections. Logging is crucial to ensure that any security incident can be investigated with thorough documentation of all activities. 
+
+Copy these same preferences from the domain profile to the private and public profiles. Click apply and close. This is how the WD Firewall selection should look:
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/4f1c084e-4b99-4822-ab77-38efe9fc9a49" />
+
+Further in the WD Firewall selectio, there are three tabs; Inbound Rules, Outbound Rules, and Connection Security Rules. For testing purposes, we will create a custom Inbound rule to allow ICMP packets through the firewall. Right-click on Inbound Rules and create a new rule. 
+
+Under rule type, choose custom. Choose All Programs. Set Protol Type: ICMPv4. Under "Which Remote IP Address does this rule apply to?" choose the network IP and subnet, which in my case is 192.168.20.10/24. Set Allow Connection, and only check Domain. I will name the rule Allow pring from local network 192.168.20.10/24. Click finish. You will see your newly created inbound rule here.
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/13c29265-6c07-4268-ba5f-d6363e16c3bb" />
+
+Now, let's link the firewall rules to the PC1. We have already done this before. Right-click the OU containing the PC1, and link the GPO.
+
+On the PC1, run ```firewall.cpl``` in the Run menu. Go to Advanced Settings, and you should see the newly created Inbound Rule.
+
+<img width="1024" height="768" alt="image" src="https://github.com/user-attachments/assets/187ca102-dda4-4c8f-b9a7-427006c85da1" />
+
+Now, let's ping the PC from the DC to test ICMP inbound traffic. On the Command Prompt, run ```ping 192.168.20.11``` or whatever your client IP was. As you can see, the ping communication works, and we see communication between the two devices. 
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/73b067b8-0a7b-476a-bc49-9a85117002ef" />
+
+We can also test this from the PC1 to the DC. Do the same, with the correct IP.
+
+<img width="1024" height="768" alt="image" src="https://github.com/user-attachments/assets/f52b55cf-d0e0-46c3-9990-df9ab273a5c6" />
+
+Nice! Despite blocking inbound traffic to the device, we were able to create a rule that allowed ICMP traffic to it! Nicely done.
