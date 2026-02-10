@@ -1,7 +1,7 @@
 # Active Directory: Group Policy Hardening
 This repo demonstrates the implementation of password policy, account lockout, software restriction policies, firewall config, and LAPS.
 
-From server manager, open ```Tools > Group Policy Management```
+Firstly, let's configure password security and account lockouts. From server manager, open ```Tools > Group Policy Management```
 
 <img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/0a3d989a-ef76-4747-8dfd-6d4dd29b57d1" />
 
