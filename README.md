@@ -104,3 +104,22 @@ We can also test this from the PC1 to the DC. Do the same, with the correct IP.
 <img width="1024" height="768" alt="image" src="https://github.com/user-attachments/assets/f52b55cf-d0e0-46c3-9990-df9ab273a5c6" />
 
 Nice! Despite blocking inbound traffic to the device, we were able to create a rule that allowed ICMP traffic to it! Nicely done.
+
+Now, to configure the Local Administrator Password Solution (LAPS). Firstly, go to the Windows website and download the program. You'll want the .64.msi version.
+
+<img width="1198" height="757" alt="image" src="https://github.com/user-attachments/assets/cf93b735-8655-471e-bb7a-9f45faf37895" />
+
+Then, assuming you have guest additions enabled, drag the program file into the DC. Run it, and choose to install the entire program locally on the machine. Once the setup is finished, restart the DC.
+
+Open Powershell as administrator. We will be updating the schema. Enter ```Import-Module AdmPwd.PS```. This will reference the LAPS program. Then run ```Update-AdmPwdADSchema``` to update the schema. You will see below what it looks like if the schema is successfully updated.
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/968d2b25-867c-48d2-a929-24abfebd1df2" />
+
+We need to update the permissions of the machines that will be utilizing LAPS to update any necessary records. To do this, run ```Set-AdmPwdComputerSelfPermission -Orgunit <OU here>```. I chose Workstations, as it is the OU that contains the PC1. Successfully doing this command will see that you have delegated permissions to the computers within that OU.
+
+The security team needs to be able to see the updated passwords. Create a new OU within ADUC and name it Security Groups. Within it, create a group named LAPS admins. Modify the properties of the group such that only Domain Admins can access it. Then head back to Powershell to grant permissions to the Domain Admins.
+
+In Powershell, run ```Set-AdmPwdReadPasswordPermission -Identity <OU here> -AllowedPrincipals "LAPS Admins"```. This will grant all members of the LAPS admins the ability to view the saved passwords on the DC. Nicely done.
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/c390dfb5-f10a-4186-8839-08879d270439" />
+
