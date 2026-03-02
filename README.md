@@ -123,3 +123,22 @@ In Powershell, run ```Set-AdmPwdReadPasswordPermission -Identity <OU here> -Allo
 
 <img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/c390dfb5-f10a-4186-8839-08879d270439" />
 
+Next, we have to access the fileshare to give all other machines in the domain the LAPS executable. Create a new folder under the SYSVOL directory and paste the LAPS exe in there. 
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/48d7dc20-6720-4341-b474-3b3caef90328" />
+
+Create a new GPO and name it LAPS. Then, edit that GPO and navigate to ```Computer Configuration > Policies > Software Settings > Software installation```. Add a new package to it and point the package to the LAPS exe from the fileshare. Then navigate to ```Administrative Templates > LAPS``` and configure the LAPS settings to the ones shown in the below screenshot:
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/1143dc1d-8f03-40dd-9bed-e9cb01d240af" />
+
+Link the GPO we made to the Workstations OU, and that essentially has made LAPS up and running. From the start menu, run the LAPS UI. Search for PC1, and you will see that it has no password set. Let's go back to the PC and force update its group policy settings.
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/bedf16f1-31b9-4082-8240-d196ee9dbdd2" />
+
+You may be unable to update GP from the first time. Restart and try again, and it should be working. After updating the GP, you should now see an encrypted version of the PC1's password! You can also change the password change date manually from this menu.
+
+<img width="1920" height="974" alt="image" src="https://github.com/user-attachments/assets/e305435c-bcfe-40ac-8ae8-488e7e22e067" />
+
+You can also see any workstation's password directly from ADUC by going to its properties, Attribute Editor, and then finding the value of ms-Mcs-AdmPwd. 
+
+Congrats! That was a lot of initial setup for AD. Next up, we will be going to the juicy parts, such as deploying a SIEM and analyzing logs. 
